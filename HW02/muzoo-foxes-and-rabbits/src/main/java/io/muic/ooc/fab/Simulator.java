@@ -20,7 +20,7 @@ public class Simulator {
     private static final int DEFAULT_DEPTH = 80;
     // The probability that a fox will be created in any given grid position.
     private static final double FOX_CREATION_PROBABILITY = 0.02;
-    // The probability that a rabbit will be created in any given position.
+    // The probability that a rabbit will be created in any given grid position.
     private static final double RABBIT_CREATION_PROBABILITY = 0.08;
 
     // Lists of animals in the field.
@@ -132,13 +132,13 @@ public class Simulator {
         field.clear();
         for (int row = 0; row < field.getDepth(); row++) {
             for (int col = 0; col < field.getWidth(); col++) {
+                Location location = new Location(row, col);
+                Boolean randomAge = true;
                 if (RANDOM.nextDouble() <= FOX_CREATION_PROBABILITY) {
-                    Location location = new Location(row, col);
-                    Fox fox = new Fox(true, field, location);
+                    Fox fox = new Fox(randomAge, field, location);
                     animals.add(fox);
                 } else if (RANDOM.nextDouble() <= RABBIT_CREATION_PROBABILITY) {
-                    Location location = new Location(row, col);
-                    Rabbit rabbit = new Rabbit(true, field, location);
+                    Rabbit rabbit = new Rabbit(randomAge, field, location);
                     animals.add(rabbit);
                 }
                 // else leave the location empty.
@@ -146,9 +146,6 @@ public class Simulator {
         }
     }
 
-    private void animalFactory(int row, int col, Animal animal){
-        animals.add(anima1);
-    }
 
     /**
      * Pause for a given time.

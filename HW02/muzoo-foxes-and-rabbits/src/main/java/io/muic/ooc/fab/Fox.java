@@ -39,11 +39,8 @@ public class Fox extends Animal {
         setLocation(location);
         if (randomAge) {
             age = RANDOM.nextInt(MAX_AGE);
-            foodLevel = RANDOM.nextInt(RABBIT_FOOD_VALUE);
-        } else {
-            // leave age at 0
-            foodLevel = RANDOM.nextInt(RABBIT_FOOD_VALUE);
         }
+        foodLevel = RANDOM.nextInt(RABBIT_FOOD_VALUE);
     }
 
     /**
@@ -68,10 +65,9 @@ public class Fox extends Animal {
             // See if it was possible to move.
             if (newLocation != null) {
                 setLocation(newLocation);
-            } else {
-                // Overcrowding.
-                setDead();
             }
+            // Overcrowding.
+            setDead();
         }
     }
 

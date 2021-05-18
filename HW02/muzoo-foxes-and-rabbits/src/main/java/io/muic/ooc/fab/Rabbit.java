@@ -50,10 +50,9 @@ public class Rabbit extends Animal {
             Location newLocation = field.freeAdjacentLocation(location);
             if (newLocation != null) {
                 setLocation(newLocation);
-            } else {
-                // Overcrowding.
-                setDead();
             }
+            // Overcrowding.
+            setDead();
         }
     }
 
