@@ -3,7 +3,7 @@ package io.muic.ooc.fab;
 import java.util.List;
 import java.util.Random;
 
-public class Rabbit extends Animal {
+public class Rabbit extends Animal implements Prey{
     // Characteristics shared by all rabbits (class variables).
 
     // The age at which a rabbit can start to breed.
@@ -13,9 +13,12 @@ public class Rabbit extends Animal {
     // The likelihood of a rabbit breeding.
     private static final double BREEDING_PROBABILITY = 0.12;
     // The maximum number of births.
-    private static final int MAX_LITTER_SIZE = 4;
+    private static final int MAX_LITTER_SIZE = 20;
     // A shared random number generator to control breeding.
+    private static final int FOOD_VALUE = 9;
+
     private static final Random RANDOM = new Random();
+
 
     /**
      * Create a new rabbit. A rabbit may be created with age zero (a new born)
@@ -50,9 +53,10 @@ public class Rabbit extends Animal {
             Location newLocation = field.freeAdjacentLocation(location);
             if (newLocation != null) {
                 setLocation(newLocation);
+            }else {
+                // Overcrowding.
+                setDead();
             }
-            // Overcrowding.
-            setDead();
         }
     }
 
@@ -79,5 +83,9 @@ public class Rabbit extends Animal {
     @Override
     protected Animal createYoung(boolean randomAge, Field field, Location location) {
         return new Rabbit(randomAge, field, location);
+    }
+
+    public int getFoodValue() {
+        return FOOD_VALUE;
     }
 }

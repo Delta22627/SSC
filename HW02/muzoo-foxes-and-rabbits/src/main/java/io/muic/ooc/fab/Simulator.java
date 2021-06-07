@@ -18,10 +18,14 @@ public class Simulator {
     private static final int DEFAULT_WIDTH = 120;
     // The default depth of the grid.
     private static final int DEFAULT_DEPTH = 80;
+    // The probability that a hunter will be created in any given grid position.
+    private static final double HUNTER_CREATION_PROBABILITY = 0.01;
+    // The probability that a tiger will be created in any given grid position.
+    private static final double TIGER_CREATION_PROBABILITY = 0.02;
     // The probability that a fox will be created in any given grid position.
-    private static final double FOX_CREATION_PROBABILITY = 0.02;
+    private static final double FOX_CREATION_PROBABILITY = 0.10;
     // The probability that a rabbit will be created in any given grid position.
-    private static final double RABBIT_CREATION_PROBABILITY = 0.08;
+    private static final double RABBIT_CREATION_PROBABILITY = 0.16;
 
     // Lists of animals in the field.
     private List<Animal> animals;
@@ -33,6 +37,8 @@ public class Simulator {
     private SimulatorView view;
     // Random generator
     private static final Random RANDOM = new Random();
+
+    private AnimalSpecies animalSpecies;
 
     /**
      * Construct a simulation field with default size.
@@ -62,6 +68,8 @@ public class Simulator {
         view = new SimulatorView(depth, width);
         view.setColor(Rabbit.class, Color.ORANGE);
         view.setColor(Fox.class, Color.BLUE);
+        view.setColor(Tiger.class, Color.RED);
+        view.setColor(Hunter.class, Color.GREEN);
 
         // Setup a valid starting point.
         reset();
@@ -118,7 +126,11 @@ public class Simulator {
     public void reset() {
         step = 0;
         animals.clear();
-        populate();
+        try {
+            populate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         // Show the starting state in the view.
         view.showStatus(step, field);
@@ -127,21 +139,26 @@ public class Simulator {
     /**
      * Randomly populate the field with foxes and rabbits.
      */
-    private void populate() {
+    private void populate() throws Exception {
         
         field.clear();
         for (int row = 0; row < field.getDepth(); row++) {
             for (int col = 0; col < field.getWidth(); col++) {
-                Location location = new Location(row, col);
                 Boolean randomAge = true;
-                if (RANDOM.nextDouble() <= FOX_CREATION_PROBABILITY) {
-                    Fox fox = new Fox(randomAge, field, location);
-                    animals.add(fox);
+                Location location = new Location(row, col);
+                if (RANDOM.nextDouble() <= HUNTER_CREATION_PROBABILITY) {
+                    animalSpecies = animalSpecies.HUNTER;
+                } else if (RANDOM.nextDouble() <= TIGER_CREATION_PROBABILITY) {
+                    animalSpecies = animalSpecies.TIGER;
+                } else if (RANDOM.nextDouble() <= FOX_CREATION_PROBABILITY) {
+                    animalSpecies = animalSpecies.FOX;
                 } else if (RANDOM.nextDouble() <= RABBIT_CREATION_PROBABILITY) {
-                    Rabbit rabbit = new Rabbit(randomAge, field, location);
-                    animals.add(rabbit);
+                    animalSpecies = animalSpecies.RABBIT;
+                } else {
+                    continue;
                 }
-                // else leave the location empty.
+                Animal newAnimal = AnimalFactory.createAnimal(animalSpecies, randomAge, field, location);
+                animals.add(newAnimal);
             }
         }
     }
