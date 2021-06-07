@@ -17,7 +17,6 @@ public class Fox extends Animal implements Prey, Predator{
     private static final int MAX_LITTER_SIZE = 20;
     // The food value of a single rabbit. In effect, this is the
     // number of steps a fox can go before it has to eat again.
-
     private static final int FOOD_VALUE = 5;
     // Random generator
     private static final Random RANDOM = new Random();

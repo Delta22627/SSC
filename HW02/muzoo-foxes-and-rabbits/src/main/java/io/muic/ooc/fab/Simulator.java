@@ -40,6 +40,7 @@ public class Simulator {
 
     private AnimalSpecies animalSpecies;
 
+    private Boolean randomAge;
     /**
      * Construct a simulation field with default size.
      */
@@ -144,16 +145,17 @@ public class Simulator {
         field.clear();
         for (int row = 0; row < field.getDepth(); row++) {
             for (int col = 0; col < field.getWidth(); col++) {
-                Boolean randomAge = true;
+                randomAge = true;
                 Location location = new Location(row, col);
                 if (RANDOM.nextDouble() <= HUNTER_CREATION_PROBABILITY) {
-                    animalSpecies = animalSpecies.HUNTER;
+                    randomAge = false;
+                    animalSpecies = AnimalSpecies.HUNTER;
                 } else if (RANDOM.nextDouble() <= TIGER_CREATION_PROBABILITY) {
-                    animalSpecies = animalSpecies.TIGER;
+                    animalSpecies = AnimalSpecies.TIGER;
                 } else if (RANDOM.nextDouble() <= FOX_CREATION_PROBABILITY) {
-                    animalSpecies = animalSpecies.FOX;
+                    animalSpecies = AnimalSpecies.FOX;
                 } else if (RANDOM.nextDouble() <= RABBIT_CREATION_PROBABILITY) {
-                    animalSpecies = animalSpecies.RABBIT;
+                    animalSpecies = AnimalSpecies.RABBIT;
                 } else {
                     continue;
                 }

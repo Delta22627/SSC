@@ -15,8 +15,6 @@ public class Hunter extends Animal implements Predator {
     private static final double BREEDING_PROBABILITY = 0.002;
     // The maximum number of births.
     private static final int MAX_LITTER_SIZE = 2;
-    // The food value of a single rabbit. In effect, this is the
-    // number of steps a hunter can go before it has to eat again.
     // Random generator
     private static final Random RANDOM = new Random();
 

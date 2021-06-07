@@ -17,9 +17,6 @@ public class Tiger extends Animal implements Prey, Predator{
     private static final double BREEDING_PROBABILITY = 0.08;
     // The maximum number of births.
     private static final int MAX_LITTER_SIZE = 8;
-    // The food value of a single rabbit. In effect, this is the
-    // number of steps a tiger can go before it has to eat again.
-
     private static final int FOOD_VALUE = 0;
     // Random generator
     private static final Random RANDOM = new Random();
