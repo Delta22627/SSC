@@ -52,7 +52,9 @@ public abstract class Animal {
      */
     protected void incrementAge() {
         age++;
-        if (age > getMaxAge()) {
+        if ( -1 == getMaxAge()){
+            ;
+        }else if (age > getMaxAge()) {
             setDead();
         }
     }

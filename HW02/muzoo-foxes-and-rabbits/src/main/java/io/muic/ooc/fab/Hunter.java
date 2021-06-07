@@ -8,10 +8,11 @@ public class Hunter extends Animal implements Predator {
     // Characteristics shared by all hunters (class variables).
 
     // The age at which a hunter can start to breed.
-    private static final int BREEDING_AGE = 25;
+    private static final int BREEDING_AGE = 500;
     // The age to which a hunter can live.
+    private static final int MAX_AGE = -1;
     // The likelihood of a hunter breeding.
-    private static final double BREEDING_PROBABILITY = 0.01;
+    private static final double BREEDING_PROBABILITY = 0.002;
     // The maximum number of births.
     private static final int MAX_LITTER_SIZE = 2;
     // The food value of a single rabbit. In effect, this is the
@@ -64,9 +65,7 @@ public class Hunter extends Animal implements Predator {
     }
 
     @Override
-    public int getMaxAge() {
-        return 1_000_000_000;
-    }
+    public int getMaxAge() { return MAX_AGE; }
 
 
     /**

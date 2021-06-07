@@ -12,11 +12,11 @@ public class Tiger extends Animal implements Prey, Predator{
     // The age at which a tiger can start to breed.
     private static final int BREEDING_AGE = 30;
     // The age to which a tiger can live.
-    private static final int MAX_AGE = 300;
+    private static final int MAX_AGE = 500;
     // The likelihood of a tiger breeding.
-    private static final double BREEDING_PROBABILITY = 0.04;
+    private static final double BREEDING_PROBABILITY = 0.08;
     // The maximum number of births.
-    private static final int MAX_LITTER_SIZE = 5;
+    private static final int MAX_LITTER_SIZE = 8;
     // The food value of a single rabbit. In effect, this is the
     // number of steps a tiger can go before it has to eat again.
 
