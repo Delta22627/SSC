@@ -18,7 +18,7 @@ public class ServletRouter {
     }
 
     public void init(Context ctx) {
-        UserService userService = new UserService();
+        UserService userService = UserService.getInstance();
         SecurityService securityService = new SecurityService();
         securityService.setUserService(userService);
 

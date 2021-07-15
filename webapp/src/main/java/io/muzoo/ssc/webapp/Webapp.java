@@ -1,6 +1,8 @@
 package io.muzoo.ssc.webapp;
 
+import io.muzoo.ssc.webapp.service.DatabaseConnectionService;
 import io.muzoo.ssc.webapp.service.SecurityService;
+import io.muzoo.ssc.webapp.service.UserService;
 import io.muzoo.ssc.webapp.servlet.ServletRouter;
 import org.apache.catalina.Context;
 import org.apache.catalina.LifecycleException;
@@ -18,6 +20,11 @@ public class Webapp {
 
         File docBase = new File("src/main/webapp/");
         docBase.mkdirs();
+
+
+        SecurityService securityService = new SecurityService();
+        securityService.setUserService(UserService.getInstance());
+
 
         try {
             Context ctx = tomcat.addWebapp("", docBase.getAbsolutePath());

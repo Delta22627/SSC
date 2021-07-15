@@ -8,10 +8,16 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 public class DatabaseConnectionService {
+    private static DatabaseConnectionService service;
 
     private final HikariDataSource ds;
 
-    public DatabaseConnectionService() {
+    /**
+     * Database connection pool using hikari library
+     * The secret and variables are loaded from disk
+     * file.config
+     */
+    private DatabaseConnectionService() {
         ds = new HikariDataSource();
         final HikariDataSource ds = new HikariDataSource();
         ds.setMaximumPoolSize(20);
@@ -19,7 +25,7 @@ public class DatabaseConnectionService {
         ConfigProperties configProperties = ConfigurationLoader.load();
 
         if (configProperties == null){
-            throw new RuntimeException("Unable to read config.properties")
+            throw new RuntimeException("Unable to read config.properties");
         }
         ds.setDriverClassName(configProperties.getDatabaseDriverClassName());
         ds.setJdbcUrl(configProperties.getDatabaseConnectionUrl());
@@ -31,5 +37,12 @@ public class DatabaseConnectionService {
 
     public Connection getConnection() throws SQLException{
         return ds.getConnection();
+    }
+
+    public static DatabaseConnectionService getInstance(){
+        if (service == null){
+            service = new DatabaseConnectionService();
+        }
+        return service;
     }
 }

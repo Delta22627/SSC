@@ -2,6 +2,7 @@ package io.muzoo.ssc.webapp.service;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.sql.SQLException;
 import java.util.Objects;
 
 public class SecurityService {
@@ -18,8 +19,9 @@ public class SecurityService {
     }
 
     public boolean isAuthorized(HttpServletRequest request) {
-        String username = getCurrentUsername(request);
-        return userService.checkIfUserExists(username);
+        String username = (String) request.getSession()
+                .getAttribute("username");
+        return (username != null && userService.findByUsername(username) != null);
     }
 
     public void logout(HttpServletRequest request) {

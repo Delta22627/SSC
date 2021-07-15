@@ -19,13 +19,13 @@ public class ConfigurationLoader {
             String password = prop.getProperty("database.password");
 
 
+            ConfigProperties cp = new ConfigProperties();
+            cp.setDatabaseDriverClassName(driverClassName);
+            cp.setDatabaseConnectionUrl(connectionUrl);
+            cp.setDatabaseUsername(username);
+            cp.setDatabasePassword(password);
+            return cp;
 
-            return new ConfigProperties.ConfigPropertiesBuilder()
-                    .databaseDriverClassName(driverClassName)
-                    .databaseConnectionUrl(connectionUrl)
-                    .databaseUsername(username)
-                    .databasePassword(password)
-                    .build();
 
         } catch (Exception e) {return null;}
     }
