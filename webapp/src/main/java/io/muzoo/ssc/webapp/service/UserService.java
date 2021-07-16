@@ -44,7 +44,7 @@ public class UserService {
             connection.commit();
 
         } catch (SQLIntegrityConstraintViolationException e){
-            throw new UsernameNotUniqueExpection(String.format("Username %s has already been taken.",username));
+            throw new UsernameNotUniqueException(String.format("Username %s has already been taken.",username));
         } catch (SQLException throwables){
             throw new UserServiceException(throwables.getMessage());
         }
@@ -64,7 +64,7 @@ public class UserService {
                     resultSet.getLong("id"),
                     resultSet.getString("username"),
                     resultSet.getString("password"),
-                    resultSet.getString("displayName")
+                    resultSet.getString("display_name")
             );
         } catch (SQLException throwables){
             return null;
@@ -83,7 +83,7 @@ public class UserService {
                         resultSet.getLong("id"),
                         resultSet.getString("username"),
                         resultSet.getString("password"),
-                        resultSet.getString("displayName"))
+                        resultSet.getString("display_name"))
                 );
             }
 
@@ -93,7 +93,7 @@ public class UserService {
         return users;
     }
 
-    public void deleteUserByUsername(){}
+    public void deleteUserByUsername(){throw new UnsupportedOperationException("not implemented");}
 
 
     /**
@@ -108,7 +108,9 @@ public class UserService {
     public static void main(String[] args) {
         UserService userService = UserService.getInstance();
         try {
-            userService.createUser("admin", "123456", "admin");
+//            userService.createUser("admin", "123456", "admin");
+//            userService.createUser("d27", "12", "Dhup");
+            userService.createUser("test", "password", "test");
         }catch (UserServiceException e){
             e.printStackTrace();
         }

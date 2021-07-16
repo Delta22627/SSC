@@ -2,12 +2,21 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <title>Home Page</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 
 <body>
 <div class="container mt-4">
+    <nav class="navbar navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand">SSC- Login Webapp</a>
+            <a class="btn btn-light pull-right" type="button" href="/logout">Logout <i class="fa fa-times-rectangle-o"></i></a>
+
+        </div>
+    </nav>
     <h2>
-        Hello ${username}
+        Welcome ${username}
     </h2>
     <table class="table table-striped table-bordered">
         <thead>
@@ -26,8 +35,8 @@
                 <td class="py-3">${user.username}</td>
                 <td class="py-3">${user.displayName}</td>
                 <td>
-                    <button class="btn btn-warning btn-sm" type="button">Edit</button>
-                    <button class="btn btn-danger btn-sm" type="button">Delete</button>
+                    <button class="btn btn-warning btn-sm" type="button">Edit &nbsp;<i class="fa fa-pencil"></i></button>
+                    <button class="btn btn-danger btn-sm" type="button">Delete &nbsp;<i class="fa fa-remove"></i></button>
                 </td>
             </tr>
         </c:forEach>

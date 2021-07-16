@@ -1,5 +1,7 @@
 package io.muzoo.ssc.webapp.service;
 
+import org.mindrot.jbcrypt.BCrypt;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.sql.SQLException;
@@ -34,13 +36,25 @@ public class SecurityService {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
         User user = userService.findByUsername(username);
-        if (user != null && Objects.equals(user.getPassword(), password)) {
-            HttpSession session = request.getSession();
-            session.setAttribute("username", username);
-            return true;
-        } else {
-            return false;
-        }
+        String storedPass = user.getPassword();
+        System.out.println(username);
+        System.out.println(password);
+        System.out.println(storedPass);
 
+        try{
+            Boolean correctPass = BCrypt.checkpw(password, user.getPassword());
+            System.out.println(correctPass);
+            if (user != null && correctPass) {
+                HttpSession session = request.getSession();
+                session.setAttribute("username", username);
+                return true;
+            } else {
+                return false;
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return false;
     }
+
 }

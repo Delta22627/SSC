@@ -19,7 +19,6 @@ public class DatabaseConnectionService {
      */
     private DatabaseConnectionService() {
         ds = new HikariDataSource();
-        final HikariDataSource ds = new HikariDataSource();
         ds.setMaximumPoolSize(20);
 
         ConfigProperties configProperties = ConfigurationLoader.load();
@@ -33,6 +32,7 @@ public class DatabaseConnectionService {
         ds.addDataSourceProperty("password", configProperties.getDatabasePassword());
         ds.setAutoCommit(false);
 
+
     }
 
     public Connection getConnection() throws SQLException{
@@ -45,4 +45,5 @@ public class DatabaseConnectionService {
         }
         return service;
     }
+
 }
