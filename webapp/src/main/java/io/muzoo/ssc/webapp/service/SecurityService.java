@@ -36,14 +36,8 @@ public class SecurityService {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
         User user = userService.findByUsername(username);
-        String storedPass = user.getPassword();
-        System.out.println(username);
-        System.out.println(password);
-        System.out.println(storedPass);
-
         try{
             Boolean correctPass = BCrypt.checkpw(password, user.getPassword());
-            System.out.println(correctPass);
             if (user != null && correctPass) {
                 HttpSession session = request.getSession();
                 session.setAttribute("username", username);
