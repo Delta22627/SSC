@@ -38,31 +38,17 @@
     </h3>
     <div class="row justify-content-md-center h-100">
         <div class="col-sm-12 col-md-6 col-lg-4 mt-5">
-                <h1 class="text-center">Create New User</h1>
+                <h1 class="text-center">Edit User ${username}</h1>
                 <p>${error}</p>
-                <form action="/user/create" method="post" autocomplete="off">
-                    <div class="input-group mb-3 input-group-md">
-                    <span class="input-group-text" id="username" style="width: 40px">
-                        <i class="fa fa-user"></i></span>
-                        <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="username" name="username">
-                    </div>
+                <form action="/user/edit?username=${username}" method="post" autocomplete="off">
                     <div class="input-group mb-3 input-group-md">
                     <span class="input-group-text" id="displayName" style="width: 40px">
                         <i class="fa fa-user"></i></span>
-                        <input type="text" class="form-control" placeholder="Display Name" aria-label="Display name" aria-describedby="displayName" name="displayName">
+                        <input type="text" class="form-control" placeholder="Display Name" aria-label="Display name" aria-describedby="displayName" name="displayName" value="${displayName}">
                     </div>
-                    <div class="input-group mb-3 input-group-md">
-                    <span class="input-group-text" id="password" style="width: 40px">
-                        <i class="fa fa-key"></i></span>
-                        <input type="password" class="form-control" placeholder="Password" aria-label="Password" aria-describedby="password" name="password">
-                    </div>
-                    <div class="input-group mb-3 input-group-md">
-                    <span class="input-group-text" id="cpassword" style="width: 40px">
-                        <i class="fa fa-key"></i></span>
-                        <input type="password" class="form-control" placeholder="Confirm Password" aria-label="Confirm Password" aria-describedby="cpassword" name="cpassword">
-                    </div>
+
                     <div class="d-grid gap-2">
-                        <button class="btn btn-success" type="submit"><i class="fa fa-plus"></i> &nbsp; Create</button>
+                        <button class="btn btn-success" type="submit"><i class="fa fa-save"></i> &nbsp; Update</button>
                     </div>
                 </form>
         </div>

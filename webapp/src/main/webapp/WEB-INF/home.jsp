@@ -73,8 +73,10 @@
                 <td class="py-3">${user.username}</td>
                 <td class="py-3">${user.displayName}</td>
                 <td>
-                    <button class="btn btn-warning btn-sm" type="button">Edit &nbsp;<i class="fa fa-pencil"></i>
-                    </button>
+                    <a class="btn btn-warning btn-sm" type="button" href="/user/edit?username=${user.username}">Edit Display Name &nbsp;<i class="fa fa-pencil"></i>
+                    </a>
+                    <a class="btn btn-info btn-sm" type="button" href="/user/password?username=${user.username}">Edit Password &nbsp;<i class="fa fa-pencil"></i>
+                    </a>
                     <c:if test="${currentUser.username != user.username}">
                     <button type="button"
                             class="btn btn-danger btn-sm"
@@ -101,7 +103,7 @@
                                         </button>
                                         <a type="button" class="btn btn-danger"
                                            href="/user/delete?username=${user.username}"
-                                        >Delete <i class="fa fa-remove"></i></a>
+                                        >Delete &nbsp;<i class="fa fa-remove"></i></a>
                                     </div>
                                 </div>
                             </div>

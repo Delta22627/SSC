@@ -12,7 +12,8 @@ public class UserService {
     private static final String SELECT_USER_SQL = "SELECT * FROM tbl_user WHERE username = ?;";
     private static final String SELECT_ALL_USER_SQL = "SELECT * FROM tbl_user;";
     private static final String DELETE_USER_SQL = "DELETE FROM tbl_user WHERE username = ?;";
-
+    private static final String UPDATE_USER_SQL = "UPDATE tbl_user SET display_name = ? WHERE username = ?;";
+    private static final String UPDATE_USER_PASSWORD_SQL = "UPDATE tbl_user SET password = ? WHERE username = ?;";
 
 
     private DatabaseConnectionService databaseConnectionService;
@@ -119,12 +120,40 @@ public class UserService {
 
     /**
      * Users can inky change their display name when updating profile
-     * @param id
+     * @param username
      * @param displayName
      */
-    public void updateUserByID(long id, String displayName){throw new UnsupportedOperationException("not implemented");}
+    public void updateUserByUsername(String username, String displayName) throws UserServiceException {
+        try (Connection connection = databaseConnectionService.getConnection();
+             PreparedStatement ps = connection.prepareStatement(UPDATE_USER_SQL);){
 
-    public void changePassword(String newPassword){throw new UnsupportedOperationException("not implemented");}
+            ps.setString(1, displayName);
+            ps.setString(2, username);
+            ps.executeUpdate();
+            connection.commit();
+
+        } catch (SQLIntegrityConstraintViolationException e){
+            throw new UsernameNotUniqueException(String.format("Username %s has already been taken.",username));
+        } catch (SQLException throwables){
+            throw new UserServiceException(throwables.getMessage());
+        }
+    }
+
+    public void changePassword(String username, String newPassword) throws UserServiceException {
+        try (Connection connection = databaseConnectionService.getConnection();
+             PreparedStatement ps = connection.prepareStatement(UPDATE_USER_PASSWORD_SQL);){
+
+            ps.setString(1, BCrypt.hashpw(newPassword, BCrypt.gensalt()));
+            ps.setString(2, username);
+            ps.executeUpdate();
+            connection.commit();
+
+        } catch (SQLIntegrityConstraintViolationException e){
+            throw new UsernameNotUniqueException(String.format("Username %s has already been taken.",username));
+        } catch (SQLException throwables){
+            throw new UserServiceException(throwables.getMessage());
+        }
+    }
 
     public static void main(String[] args) {
         UserService userService = UserService.getInstance();

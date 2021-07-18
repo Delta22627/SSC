@@ -1,7 +1,7 @@
 package io.muzoo.ssc.webapp.servlet;
 
+import io.muzoo.ssc.webapp.service.User;
 import io.muzoo.ssc.webapp.service.UserService;
-import io.muzoo.ssc.webapp.service.UserServiceException;
 import org.apache.commons.lang.StringUtils;
 
 import javax.servlet.RequestDispatcher;
@@ -10,16 +10,21 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class CreateUserServlet extends AbstractRoutableHttpServlet{
+public class EditUserServlet extends AbstractRoutableHttpServlet{
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         if (securityService.isAuthorized(request)) {
+            String username = StringUtils.trim((String) request.getParameter("username")); // from query part
+            UserService userService = UserService.getInstance();
 
-            String username = (String) request.getSession().getAttribute("username");
-            request.setAttribute("username", username);
+            User user = userService.findByUsername(username);
+            request.setAttribute("user", user);
+            request.setAttribute("username", user.getUsername());
+            request.setAttribute("displayName", user.getDisplayName());
 
-            RequestDispatcher requestDispatcher = request.getRequestDispatcher("/WEB-INF/create.jsp");
+
+            RequestDispatcher requestDispatcher = request.getRequestDispatcher("/WEB-INF/edit.jsp");
             requestDispatcher.include(request, response);
             request.getSession().removeAttribute("hasError");
             request.getSession().removeAttribute("message");
@@ -34,30 +39,27 @@ public class CreateUserServlet extends AbstractRoutableHttpServlet{
     }
     @Override
     public String getPattern() {
-        return "/user/create";
+        return "/user/edit";
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         if (securityService.isAuthorized(request)) {
-            String username = StringUtils.trim((String) request.getParameter("username"));
+            String username = StringUtils.trim((String) request.getParameter("username")); // from query part
             String displayName = StringUtils.trim((String) request.getParameter("displayName"));
-            String password = (String) request.getParameter("password");
-            String cpassword = (String) request.getParameter("cpassword");
 
             UserService userService = UserService.getInstance();
+            User user = userService.findByUsername(username);
+
             String errorMessage = null;
-            if (userService.findByUsername(username) != null){
-                errorMessage = String.format("Username %s already been taken.", username);
+            if (user == null){
+                errorMessage = String.format("Username %s does not exist.", username);
             }
 
             if (StringUtils.isBlank(displayName)){
                 errorMessage = "Display name cannot be blank";
             }
 
-            if (!StringUtils.equals(password,cpassword)){
-                errorMessage = "Confirm password is not the same as password";
-            }
 
             if(errorMessage != null){
                 request.getSession().setAttribute("hasError", true);
@@ -65,9 +67,9 @@ public class CreateUserServlet extends AbstractRoutableHttpServlet{
             }
             else {
                 try {
-                    userService.createUser(username, password, displayName);
+                    userService.updateUserByUsername(username, displayName);
                     request.getSession().setAttribute("hasError", false);
-                    request.getSession().setAttribute("message", String.format("Username %s created.", username));
+                    request.getSession().setAttribute("message", String.format("Username %s updated.", username));
                     response.sendRedirect("/");
                     return;
                 } catch (Exception e) {
@@ -75,7 +77,7 @@ public class CreateUserServlet extends AbstractRoutableHttpServlet{
                     request.getSession().setAttribute("message", String.format("Username %s already been taken.", username));
                 }
             }
-            RequestDispatcher requestDispatcher = request.getRequestDispatcher("/WEB-INF/create.jsp");
+            RequestDispatcher requestDispatcher = request.getRequestDispatcher("/WEB-INF/edit.jsp");
             requestDispatcher.include(request, response);
 
 

@@ -17,6 +17,9 @@ public class ServletRouter {
         servletClasses.add(LogoutServlet.class);
         servletClasses.add(DeleteUserServlet.class);
         servletClasses.add(CreateUserServlet.class);
+        servletClasses.add(EditUserServlet.class);
+        servletClasses.add(ChangePasswordServlet.class);
+
     }
 
     public void init(Context ctx) {
