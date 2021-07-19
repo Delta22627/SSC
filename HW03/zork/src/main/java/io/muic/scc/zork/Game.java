@@ -1,12 +1,16 @@
 package io.muic.scc.zork;
 
+import io.muic.scc.zork.characters.Monster;
+import io.muic.scc.zork.characters.Player;
 import io.muic.scc.zork.commands.Command;
 import io.muic.scc.zork.commands.CommandWord;
 import io.muic.scc.zork.commands.Parser;
 import io.muic.scc.zork.maps.Direction;
+import io.muic.scc.zork.maps.MapDirector;
 import io.muic.scc.zork.maps.MapRoom;
 
 import java.util.List;
+import java.util.Scanner;
 
 /**
  *  This class is the main class of the "World of Zuul" application. 
@@ -30,72 +34,33 @@ public class Game
     private final Parser parser;
     private MapRoom currentMapRoom;
     private MapRoom previousMapRoom;
-    private int magic_counter = 5; // the counter that help change the transporterRoom location
     private List<MapRoom> allMapRooms; // list of all rooms that is not transporterRoom
-    private MapRoom connected; // the room that ''go magic'' will transport to
-    private MapRoom transporterMapRoom; // the magic room that will change randomly
+    private Player player;
+
 
         
     /**
      * Create the game and initialise its internal map.
      */
-    public Game() 
-    {
-        createRooms();
+    public Game() {
+//        Scanner reader = null;
+//        String inputLine;
+//        String map = null;
+//        System.out.print("Please choose the map [muic] or [2]");
+//        System.out.print("> ");     // print prompt
+//
+//        inputLine = reader.nextLine();
+//        Scanner tokenizer = new Scanner(inputLine);
+//        if(tokenizer.hasNext()) {
+//            map = tokenizer.next();
+//        }
+        // Find up to two words on the line.
+        MapDirector mapDirector = MapDirector.getInstance();
+        currentMapRoom = MapDirector.createMap("muic");
+        player = new Player();
         parser = new Parser();
     }
 
-    /**
-     * Create all the rooms and link their exits together. Except the room that the magic room is transport to.
-     */
-    private void createRooms()
-    {
-        MapRoom outside, comSciFourth, library, comSciFifth, bioLab, chemLab, sciDivision, secretaryDesk, kanatOffice, pitiOffice, twlOffice;
-
-        // create the rooms
-        outside = new MapRoom("outside the main entrance of the Mahidol University International College old building");
-        comSciFourth = new MapRoom("in 1406 Computer Science Lounge");
-        library = new MapRoom("in Library");
-        comSciFifth = new MapRoom("in 1502 Computer Science Lounge");
-        bioLab = new MapRoom("in 3508 Biology Lab");
-        chemLab = new MapRoom("in 3504 Chemistry Lab");
-        sciDivision = new MapRoom("in Science Division");
-        secretaryDesk = new MapRoom("at Science Division Secretary Desk");
-        kanatOffice = new MapRoom("at AJ Kanat office, surely you have question to ask.");
-        pitiOffice = new MapRoom("at AJ Piti Office and he is not there.");
-        twlOffice = new MapRoom("at AJ Taweetham Office. Have you done his work?");
-        transporterMapRoom = new MapRoom("Where are you?");
-        
-        // initialise room exits
-        outside.setExits("up", library);
-        comSciFourth.setExits("up", bioLab);
-        library.setExits("north", comSciFourth);
-        bioLab.setExits("west", chemLab);
-        chemLab.setExits("west", sciDivision);
-        sciDivision.setExits("south", comSciFifth);
-        comSciFifth.setExits("down", library);
-        secretaryDesk.setExits("east", sciDivision);
-        kanatOffice.setExits("north", secretaryDesk);
-        pitiOffice.setExits("west", kanatOffice);
-        twlOffice.setExits("north", comSciFifth);
-        transporterMapRoom.setExits("north", kanatOffice);
-
-        currentMapRoom = outside;  // start game outside
-        // update the value of the class variables
-        connected = kanatOffice;
-        allMapRooms = List.of(outside, comSciFourth, library, comSciFifth, bioLab, chemLab, sciDivision, secretaryDesk, kanatOffice, pitiOffice, twlOffice);
-
-    }
-
-    /**
-     * Link the magic room to where it transport to
-     * @return the room that the transporterRoom will mimic
-     */
-    private MapRoom magicRoom(){
-        int index = magic_counter % allMapRooms.size();
-        MapRoom magicNeighbor = allMapRooms.get(index);
-        return magicNeighbor;
-    }
 
     /**
      *  Main play routine.  Loops until end of play.
@@ -121,8 +86,8 @@ public class Game
     private void printWelcome()
     {
         System.out.println();
-        System.out.println("Welcome to the World of Zuul!");
-        System.out.println("World of Zuul is a new, incredibly boring adventure game.");
+        System.out.println("Welcome to Zork!");
+        System.out.println(" ");
         System.out.println("Type 'help' if you need help.");
         System.out.println();
         System.out.println(getLocationInfo());
@@ -137,6 +102,10 @@ public class Game
     private boolean processCommand(Command command) 
     {
         boolean wantToQuit = false;
+        if(player.getCurrentHealth() <= 0){
+            System.out.println("YOU DIED");
+            return true;
+        }
 
         CommandWord commandWord = command.getCommandWord();
 
@@ -149,10 +118,6 @@ public class Game
                 break;
             case GO:
                 goRoom(command);
-                if (currentMapRoom == connected) {
-                    transporterMapRoom.setExits("special", magicRoom());
-                }
-                magic_counter += 7;
                 break;
             case BACK:
                 MapRoom temp = currentMapRoom;
@@ -167,6 +132,9 @@ public class Game
                 wantToQuit = quit(command);
                 break;
 
+            case INFO:
+                System.out.println(getInfo());
+                break;
         }
 
         return wantToQuit;
@@ -224,8 +192,6 @@ public class Game
             case UP:
                 nextMapRoom = currentMapRoom.upExit;
                 break;
-            case SPECIAL:
-                nextMapRoom = connected;
             case UNKNOWN:
                 break;
         }
@@ -234,9 +200,16 @@ public class Game
             System.out.println("There is no door!, You shall not pass!");
         }
         else {
+            int health = player.getCurrentHealth() + 50;
+            if(health > player.getHealth()){
+                player.setCurrentHealth(player.getCurrentHealth());
+            }else {
+                player.setCurrentHealth(health);
+            }
             previousMapRoom = currentMapRoom;
             currentMapRoom = nextMapRoom;
             System.out.println(getLocationInfo());
+            System.out.println(String.format("Your current health is %s / %s.", player.getCurrentHealth(), player.getHealth()));
         }
 
 
@@ -295,5 +268,22 @@ public class Game
         else {
             return true;  // signal that we want to quit
         }
+    }
+
+    private String getInfo(){
+        StringBuilder info = new StringBuilder();
+        List<Monster> monsters = currentMapRoom.monsters;
+        info.append(String.format("Your current health is %s / %s.", player.getCurrentHealth(), player.getHealth()));
+        info.append('\n');
+        if(monsters == null){
+            info.append("There is no monster.");
+        }else {
+            for (Monster monster : monsters) {
+                info.append(monster.getInfo());
+                info.append('\n');
+            }
+        }
+        info.append(getLocationInfo());
+        return info.toString();
     }
 }

@@ -1,5 +1,5 @@
 package io.muic.scc.zork.maps;
 
 public enum Direction {
-    NORTH, EAST, SOUTH, WEST, DOWN, UP, SPECIAL, UNKNOWN;
+    NORTH, EAST, SOUTH, WEST, DOWN, UP, UNKNOWN;
 }

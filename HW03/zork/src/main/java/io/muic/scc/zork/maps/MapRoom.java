@@ -1,6 +1,11 @@
 package io.muic.scc.zork.maps;
 
+import io.muic.scc.zork.characters.Monster;
+import io.muic.scc.zork.items.Item;
+
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Class Room - a room in an adventure game.
@@ -28,6 +33,8 @@ public class MapRoom
     public MapRoom westExit = null;
     public MapRoom downExit = null;
     public MapRoom upExit = null;
+    public List<Monster> monsters;
+    public List<Item> items = null;
 
     /**
      * Create a room described "description". Initially, it has
@@ -51,9 +58,6 @@ public class MapRoom
         validDirections.put("left", Direction.WEST);
         validDirections.put("down", Direction.DOWN);
         validDirections.put("up", Direction.UP);
-//        validDirections.put("magic", Direction.SPECIAL);
-//        validDirections.put("special", Direction.SPECIAL);
-//        validDirections.put("poweroverwhelming", Direction.SPECIAL);
         this.description = description;
     }
 
@@ -91,17 +95,45 @@ public class MapRoom
                 this.upExit = neighbor;
                 neighbor.downExit = this;
                 break;
-            case SPECIAL:
-                this.description = neighbor.description;
-                this.northExit = neighbor.northExit;
-                this.southExit = neighbor.southExit;
-                this.eastExit = neighbor.eastExit;
-                this.westExit = neighbor.westExit;
-                this.downExit = neighbor.downExit;
-                this.upExit = neighbor.upExit;
-                break;
             case UNKNOWN:
                 break;
+        }
+    }
+
+    public void setMonsters(int amount){
+        if(amount > 0){
+            monsters = new ArrayList<>();
+            for (int i = 0; i < amount; i++) {
+                Monster monster = new Monster();
+                monsters.add(monster);
+            }
+            StringBuilder info = new StringBuilder();
+            info.append(description);
+            if(amount > 1) {
+                info.append(String.format(" There are %s monsters in this room.", amount));
+            }
+            else {
+                info.append(" There is 1 monster in this room.");
+            }
+            description = info.toString();
+        }
+        else{
+            System.out.println("Invalid amount of monsters");
+        }
+    }
+
+    public void addItem(Item item){
+        items = new ArrayList<>();
+        items.add(item);
+        if(items != null){
+            StringBuilder info = new StringBuilder();
+            info.append(description);
+            if(items.size() > 1){
+                info.append(item.getName());
+            }
+            else{
+                info.append(String.format(" There are %s avaliable", item.getName()));
+            }
         }
     }
 
