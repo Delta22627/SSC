@@ -1,18 +1,22 @@
 package io.muic.scc.zork.maps;
 
-import io.muic.scc.zork.commands.CommandWord;
+import io.muic.scc.zork.items.ItemFactory;
+import io.muic.scc.zork.items.ItemsList;
 import io.muic.scc.zork.items.Weapon;
 
 import java.util.HashMap;
-import java.util.List;
+
 
 public class MapDirector {
     private static HashMap<String, MapSelection> validMaps;
     private static final MapDirector INSTANCE = new MapDirector();
+
     private MapDirector(){
         validMaps = new HashMap<>();
         validMaps.put("muic",MapSelection.MUIC);
         validMaps.put("2",MapSelection.TWO);
+
+
     }
 
     public static MapDirector getInstance(){
@@ -65,15 +69,19 @@ public class MapDirector {
         comSciFifth.setMonsters(2);
         library.setMonsters(1);
 
-        Weapon axe = new Weapon("axe");
-        library.addItem(axe);
+        library.addItem("axe");
+        library.addItem("knife");
+        outside.addItem("knife");
+        comSciFifth.addItem("spear");
+        bioLab.addItem("sword");
         return outside;  // start game outside
         // update the value of the class variables
     }
 
     public static MapRoom createSecondMap(){
-            MapRoom outside, comSciFourth, library, comSciFifth, bioLab, chemLab, sciDivision, secretaryDesk, kanatOffice, pitiOffice, twlOffice;
+        MapRoom outside, comSciFourth, library, comSciFifth, bioLab, chemLab, sciDivision, secretaryDesk, kanatOffice, pitiOffice, twlOffice;
         System.out.println("second map selected");
+
             // create the rooms
             outside = new MapRoom("outside the main entrance of Mahidol University International College old building");
             comSciFourth = new MapRoom("in 1406 Computer Science Lounge");

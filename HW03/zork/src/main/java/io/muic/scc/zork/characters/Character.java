@@ -2,7 +2,7 @@ package io.muic.scc.zork.characters;
 
 public abstract class Character {
     private int health = 100;
-    private int attackPower = 50;
+    private int attackPower = 10;
     private int currentHealth = 100;
 
     public int getHealth() {

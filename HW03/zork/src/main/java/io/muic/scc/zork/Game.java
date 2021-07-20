@@ -5,6 +5,10 @@ import io.muic.scc.zork.characters.Player;
 import io.muic.scc.zork.commands.Command;
 import io.muic.scc.zork.commands.CommandWord;
 import io.muic.scc.zork.commands.Parser;
+import io.muic.scc.zork.items.Item;
+import io.muic.scc.zork.items.ItemFactory;
+import io.muic.scc.zork.items.ItemsList;
+import io.muic.scc.zork.items.Weapon;
 import io.muic.scc.zork.maps.Direction;
 import io.muic.scc.zork.maps.MapDirector;
 import io.muic.scc.zork.maps.MapRoom;
@@ -36,7 +40,7 @@ public class Game
     private MapRoom previousMapRoom;
     private List<MapRoom> allMapRooms; // list of all rooms that is not transporterRoom
     private Player player;
-
+    private ItemFactory itemFactory;
 
         
     /**
@@ -57,6 +61,7 @@ public class Game
         // Find up to two words on the line.
         MapDirector mapDirector = MapDirector.getInstance();
         currentMapRoom = MapDirector.createMap("muic");
+        itemFactory = ItemFactory.getInstance();
         player = new Player();
         parser = new Parser();
     }
@@ -131,14 +136,24 @@ public class Game
             case QUIT:
                 wantToQuit = quit(command);
                 break;
-
             case INFO:
                 System.out.println(getInfo());
+                break;
+            case ATTACK:
+                System.out.println(playerAttack(command));
+                break;
+            case TAKE:
+                playerTakeItem(command);
+                break;
+            case DROP:
+                playerDropItem(command);
                 break;
         }
 
         return wantToQuit;
     }
+
+
 
     // implementations of user commands:
 
@@ -153,7 +168,7 @@ public class Game
         System.out.println("around at the university.");
         System.out.println();
         System.out.println("Your command words are:");
-        System.out.println("   help, go, look, quit, bye");
+        System.out.println("   help, go, back, look, info, take, drop, attack, quit, bye");
     }
 
     /** 
@@ -202,7 +217,7 @@ public class Game
         else {
             int health = player.getCurrentHealth() + 50;
             if(health > player.getHealth()){
-                player.setCurrentHealth(player.getCurrentHealth());
+                player.setCurrentHealth(player.getHealth());
             }else {
                 player.setCurrentHealth(health);
             }
@@ -273,6 +288,9 @@ public class Game
     private String getInfo(){
         StringBuilder info = new StringBuilder();
         List<Monster> monsters = currentMapRoom.monsters;
+        List<String> items = currentMapRoom.getItemList();
+        info.append(getLocationInfo());
+        info.append('\n');
         info.append(String.format("Your current health is %s / %s.", player.getCurrentHealth(), player.getHealth()));
         info.append('\n');
         if(monsters == null){
@@ -283,7 +301,96 @@ public class Game
                 info.append('\n');
             }
         }
-        info.append(getLocationInfo());
+        if (items == null){
+            info.append("There is no item.");
+        }else {
+            info.append("There are ");
+            for (String item : items) {
+                info.append(item);
+                info.append(" ");
+            }
+            info.append("in available in this room.");
+            info.append('\n');
+        }
         return info.toString();
     }
+
+    private String playerAttack(Command command){
+        StringBuilder info = new StringBuilder();
+        List<Monster> monsters = currentMapRoom.monsters;
+        if(monsters == null){
+            info.append("There is no monster");
+            return info.toString();
+        }
+        Monster monster = monsters.get(0);
+
+        if(command.hasSecondWord()) {
+            String weaponName = command.getSecondWord();
+            if (player.getItems().contains(weaponName)) {
+                ItemsList item = itemFactory.getItem(weaponName);
+                Weapon weapon = (Weapon) itemFactory.createItem(item);
+                player.setAttackPower(weapon.getAttackPower());
+                info.append(String.format("You attack with %s",weaponName));
+            }else {
+                info.append(String.format("You dont have %s",weaponName));
+                return info.toString();
+            }
+        }else{
+            player.setAttackPower(10);
+            info.append("You attack with your bare hands!");
+        }
+        info.append('\n');
+        player.attack(monster);
+        if(monster.getCurrentHealth() <= 0){
+            monsters.remove(0);
+            info.append("You killed a monster!");
+        }else{
+            monster.attack(player);
+            info.append("The monster attacks you back!");
+        }
+        info.append('\n');
+        info.append(String.format("Your current health is %s / %s.", player.getCurrentHealth(), player.getHealth()));
+        return info.toString();
+    }
+
+
+
+
+
+    private void playerTakeItem(Command command){
+        if(!command.hasSecondWord()) {
+            // if there is no second word, we don't know where to go...
+            System.out.println("Take what?");
+            return;
+        }
+
+        String itemName = command.getSecondWord();
+        if(!currentMapRoom.getItemList().contains(itemName)){
+            System.out.println(String.format("%s does not exist in this room.", itemName));
+            return;
+        }
+        currentMapRoom.removeItem(itemName);
+        player.take(itemName);
+        System.out.println(String.format("You took %s.", itemName));
+
+    }
+
+    private void playerDropItem(Command command) {
+        if(!command.hasSecondWord()) {
+            // if there is no second word, we don't know where to go...
+            System.out.println("Drop what?");
+            return;
+        }
+
+        String itemName = command.getSecondWord();
+        if(!player.getItems().contains(itemName)){
+            System.out.println(String.format("You do not have %s in your bag.", itemName));
+            return;
+        }
+        currentMapRoom.addItem(itemName);
+        player.drop(itemName);
+        System.out.println(String.format("You dropped %s.", itemName));
+    }
 }
+
+

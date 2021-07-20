@@ -34,7 +34,7 @@ public class MapRoom
     public MapRoom downExit = null;
     public MapRoom upExit = null;
     public List<Monster> monsters;
-    public List<Item> items = null;
+    private List<String> items = new ArrayList<>();
 
     /**
      * Create a room described "description". Initially, it has
@@ -122,19 +122,26 @@ public class MapRoom
         }
     }
 
-    public void addItem(Item item){
-        items = new ArrayList<>();
-        items.add(item);
+    public void addItem(String itemName){
+        items.add(itemName);
         if(items != null){
             StringBuilder info = new StringBuilder();
             info.append(description);
             if(items.size() > 1){
-                info.append(item.getName());
+                info.append(itemName);
             }
             else{
-                info.append(String.format(" There are %s avaliable", item.getName()));
+                info.append(String.format(" There are %s avaliable", itemName));
             }
         }
+    }
+
+    public List<String> getItemList(){
+        return items;
+    }
+
+    public void removeItem(String itemName){
+        items.remove(itemName);
     }
 
     /**
