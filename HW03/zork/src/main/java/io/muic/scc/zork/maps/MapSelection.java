@@ -1,5 +1,5 @@
 package io.muic.scc.zork.maps;
 
 public enum MapSelection {
-    MUIC, TWO
+    MUIC, TWO, UNKNOWN
 }

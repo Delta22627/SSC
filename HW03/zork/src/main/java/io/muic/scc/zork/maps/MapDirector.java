@@ -1,5 +1,6 @@
 package io.muic.scc.zork.maps;
 
+import io.muic.scc.zork.commands.CommandWord;
 import io.muic.scc.zork.items.ItemFactory;
 import io.muic.scc.zork.items.ItemsList;
 import io.muic.scc.zork.items.Weapon;
@@ -16,21 +17,30 @@ public class MapDirector {
         validMaps.put("muic",MapSelection.MUIC);
         validMaps.put("2",MapSelection.TWO);
 
-
     }
-
+    private static MapSelection getValidMap(String map)
+    {
+        MapSelection mapSelection = validMaps.get(map);
+        if(mapSelection!= null){
+            return mapSelection;
+        }
+        return mapSelection.UNKNOWN;
+    }
     public static MapDirector getInstance(){
         return INSTANCE;
     }
 
     public static MapRoom createMap(String map) {
-        MapSelection mapSelection = validMaps.get(map);
+        MapSelection mapSelection = getValidMap(map);
         System.out.println(mapSelection);
         switch (mapSelection) {
             case MUIC:
                 return createFirstMap();
             case TWO:
                 return createSecondMap();
+            case UNKNOWN:
+                System.out.println("Unknown map default map is chosen instead.");
+                return createFirstMap();
             default:
                 System.out.println("no select map");
         }
@@ -91,9 +101,9 @@ public class MapDirector {
             chemLab = new MapRoom("in 3504 Chemistry Lab");
             sciDivision = new MapRoom("in Science Division");
             secretaryDesk = new MapRoom("at Science Division Secretary Desk");
-            kanatOffice = new MapRoom("at AJ Kanat office, surely you have question to ask.");
-            pitiOffice = new MapRoom("at AJ Piti Office and he is not there.");
-            twlOffice = new MapRoom("at AJ Taweetham Office. Have you done his work?");
+            kanatOffice = new MapRoom("at AJ Kanat office");
+            pitiOffice = new MapRoom("at AJ Piti Office");
+            twlOffice = new MapRoom("at AJ Taweetham Office.");
 
             // initialise room exits
             outside.setExits("up", library);

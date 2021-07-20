@@ -36,7 +36,6 @@ public class CommandWords
         validCommands.put("take", CommandWord.TAKE);
         validCommands.put("drop", CommandWord.DROP);
         validCommands.put("attack", CommandWord.ATTACK);
-        validCommands.put("map", CommandWord.MAP);
         validCommands.put("play", CommandWord.PLAY);
         validCommands.put("load", CommandWord.LOAD);
         validCommands.put("save", CommandWord.SAVE);

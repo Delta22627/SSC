@@ -38,31 +38,18 @@ public class Game
     private final Parser parser;
     private MapRoom currentMapRoom;
     private MapRoom previousMapRoom;
-    private List<MapRoom> allMapRooms; // list of all rooms that is not transporterRoom
     private Player player;
     private ItemFactory itemFactory;
+    private MapDirector mapDirector;
+    private boolean activeMap = false;
 
         
     /**
      * Create the game and initialise its internal map.
      */
     public Game() {
-//        Scanner reader = null;
-//        String inputLine;
-//        String map = null;
-//        System.out.print("Please choose the map [muic] or [2]");
-//        System.out.print("> ");     // print prompt
-//
-//        inputLine = reader.nextLine();
-//        Scanner tokenizer = new Scanner(inputLine);
-//        if(tokenizer.hasNext()) {
-//            map = tokenizer.next();
-//        }
-        // Find up to two words on the line.
-        MapDirector mapDirector = MapDirector.getInstance();
-        currentMapRoom = MapDirector.createMap("muic");
-        itemFactory = ItemFactory.getInstance();
-        player = new Player();
+
+        
         parser = new Parser();
     }
 
@@ -72,12 +59,27 @@ public class Game
      */
     public void play() 
     {            
+        String word1 = null;
         printWelcome();
 
         // Enter the main command loop.  Here we repeatedly read commands and
         // execute them until the game is over.
                 
         boolean finished = false;
+        if(!activeMap){
+            Scanner reader = new Scanner(System.in);
+            System.out.print("> ");     // print prompt
+            String inputLine = reader.nextLine();
+            Scanner tokenizer = new Scanner(inputLine);
+            if (tokenizer.hasNext()) {
+                word1 = tokenizer.next();
+            }
+            map(word1);
+            
+        }
+            mapDirector = MapDirector.getInstance();
+            itemFactory = ItemFactory.getInstance();
+            player = new Player();
         while (! finished) {
             Command command = parser.getCommand();
             finished = processCommand(command);
@@ -95,7 +97,7 @@ public class Game
         System.out.println(" ");
         System.out.println("Type 'help' if you need help.");
         System.out.println();
-        System.out.println(getLocationInfo());
+        System.out.println("Please choose the map [muic] or [2]");
 
     }
 
@@ -106,6 +108,7 @@ public class Game
      */
     private boolean processCommand(Command command) 
     {
+
         boolean wantToQuit = false;
         if(player.getCurrentHealth() <= 0){
             System.out.println("YOU DIED");
@@ -117,7 +120,6 @@ public class Game
         switch (commandWord){
             case UNKNOWN:
                 System.out.println("I don't know what you mean...");
-
             case HELP:
                 printHelp();
                 break;
@@ -150,10 +152,26 @@ public class Game
                 break;
         }
 
+
         return wantToQuit;
     }
 
+    private void map(String word){
+        if(activeMap){
+            System.out.println("The map is already chosen.");
+            return;
+        }
+        if(word == null) {
+            System.out.println("Default map is chosen");
+            currentMapRoom = mapDirector.createMap("muic");
+        }else {
+            currentMapRoom = mapDirector.createMap(word);
 
+        }
+        activeMap = true;
+        System.out.println(getLocationInfo());
+
+    }
 
     // implementations of user commands:
 
@@ -164,11 +182,15 @@ public class Game
      */
     private void printHelp() 
     {
-        System.out.println("You are lost. You are alone. You wander");
-        System.out.println("around at the university.");
-        System.out.println();
-        System.out.println("Your command words are:");
-        System.out.println("   help, go, back, look, info, take, drop, attack, quit, bye");
+        if(activeMap) {
+            System.out.println("You are lost. You are alone. You wander");
+            System.out.println("around at the university.");
+            System.out.println();
+            System.out.println("Your command words are:");
+            System.out.println("   help, go, back, look, info, take, drop, attack, quit, bye");
+        }else {
+            System.out.println("Please choose the map [muic] or [2]");
+        }
     }
 
     /** 
