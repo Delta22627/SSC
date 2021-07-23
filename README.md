@@ -12,7 +12,7 @@ https://github.com/Delta22627/SSC/tree/main/HW03/zork
 ## HW 4
 https://github.com/Delta22627/SSC/tree/main/webapp
 
-www.delta27.me
-
 ## SSC Project
 https://github.com/Delta22627/ssc-project
+
+www.delta27.me
